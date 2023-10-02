@@ -2,15 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Tinder.Data;
 using Tinder.Models;
 
 namespace Tinder.Controllers
 {
-    public class QuestionsController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class QuestionsController : ControllerBase
     {
         private readonly TinderContext _context;
 
@@ -19,145 +21,104 @@ namespace Tinder.Controllers
             _context = context;
         }
 
-        // GET: Questions
-        public async Task<IActionResult> Index()
+        // GET: api/Questions
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Question>>> GetQuestion()
         {
-              return _context.Question != null ? 
-                          View(await _context.Question.ToListAsync()) :
-                          Problem("Entity set 'TinderContext.Question'  is null.");
+          if (_context.Question == null)
+          {
+              return NotFound();
+          }
+            return await _context.Question.ToListAsync();
         }
 
-        // GET: Questions/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: api/Questions/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Question>> GetQuestion(int id)
         {
-            if (id == null || _context.Question == null)
-            {
-                return NotFound();
-            }
-
-            var question = await _context.Question
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (question == null)
-            {
-                return NotFound();
-            }
-
-            return View(question);
-        }
-
-        // GET: Questions/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Questions/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,QuestionsJson,UserId")] Question question)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(question);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(question);
-        }
-
-        // GET: Questions/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.Question == null)
-            {
-                return NotFound();
-            }
-
+          if (_context.Question == null)
+          {
+              return NotFound();
+          }
             var question = await _context.Question.FindAsync(id);
+
             if (question == null)
             {
                 return NotFound();
             }
-            return View(question);
+
+            return question;
         }
 
-        // POST: Questions/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,QuestionsJson,UserId")] Question question)
+        // PUT: api/Questions/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutQuestion(int id, Question question)
         {
             if (id != question.Id)
             {
-                return NotFound();
+                return BadRequest();
             }
 
-            if (ModelState.IsValid)
+            _context.Entry(question).State = EntityState.Modified;
+
+            try
             {
-                try
-                {
-                    _context.Update(question);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!QuestionExists(question.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                await _context.SaveChangesAsync();
             }
-            return View(question);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!QuestionExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
         }
 
-        // GET: Questions/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // POST: api/Questions
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult<Question>> PostQuestion(Question question)
         {
-            if (id == null || _context.Question == null)
+          if (_context.Question == null)
+          {
+              return Problem("Entity set 'TinderContext.Question'  is null.");
+          }
+            _context.Question.Add(question);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetQuestion", new { id = question.Id }, question);
+        }
+
+        // DELETE: api/Questions/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteQuestion(int id)
+        {
+            if (_context.Question == null)
             {
                 return NotFound();
             }
-
-            var question = await _context.Question
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var question = await _context.Question.FindAsync(id);
             if (question == null)
             {
                 return NotFound();
             }
 
-            return View(question);
-        }
-
-        // POST: Questions/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.Question == null)
-            {
-                return Problem("Entity set 'TinderContext.Question'  is null.");
-            }
-            var question = await _context.Question.FindAsync(id);
-            if (question != null)
-            {
-                _context.Question.Remove(question);
-            }
-            
+            _context.Question.Remove(question);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return NoContent();
         }
 
         private bool QuestionExists(int id)
         {
-          return (_context.Question?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Question?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

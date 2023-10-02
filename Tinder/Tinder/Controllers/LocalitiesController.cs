@@ -2,15 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Tinder.Data;
 using Tinder.Models;
 
 namespace Tinder.Controllers
 {
-    public class LocalitiesController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class LocalitiesController : ControllerBase
     {
         private readonly TinderContext _context;
 
@@ -19,145 +21,104 @@ namespace Tinder.Controllers
             _context = context;
         }
 
-        // GET: Localities
-        public async Task<IActionResult> Index()
+        // GET: api/Localities
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Locality>>> GetLocality()
         {
-              return _context.Locality != null ? 
-                          View(await _context.Locality.ToListAsync()) :
-                          Problem("Entity set 'TinderContext.Locality'  is null.");
+          if (_context.Locality == null)
+          {
+              return NotFound();
+          }
+            return await _context.Locality.ToListAsync();
         }
 
-        // GET: Localities/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: api/Localities/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Locality>> GetLocality(int id)
         {
-            if (id == null || _context.Locality == null)
-            {
-                return NotFound();
-            }
-
-            var locality = await _context.Locality
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (locality == null)
-            {
-                return NotFound();
-            }
-
-            return View(locality);
-        }
-
-        // GET: Localities/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Localities/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Ville,Pays,Longitude,Latitude")] Locality locality)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(locality);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(locality);
-        }
-
-        // GET: Localities/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.Locality == null)
-            {
-                return NotFound();
-            }
-
+          if (_context.Locality == null)
+          {
+              return NotFound();
+          }
             var locality = await _context.Locality.FindAsync(id);
+
             if (locality == null)
             {
                 return NotFound();
             }
-            return View(locality);
+
+            return locality;
         }
 
-        // POST: Localities/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Ville,Pays,Longitude,Latitude")] Locality locality)
+        // PUT: api/Localities/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutLocality(int id, Locality locality)
         {
             if (id != locality.Id)
             {
-                return NotFound();
+                return BadRequest();
             }
 
-            if (ModelState.IsValid)
+            _context.Entry(locality).State = EntityState.Modified;
+
+            try
             {
-                try
-                {
-                    _context.Update(locality);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!LocalityExists(locality.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                await _context.SaveChangesAsync();
             }
-            return View(locality);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!LocalityExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
         }
 
-        // GET: Localities/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // POST: api/Localities
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult<Locality>> PostLocality(Locality locality)
         {
-            if (id == null || _context.Locality == null)
+          if (_context.Locality == null)
+          {
+              return Problem("Entity set 'TinderContext.Locality'  is null.");
+          }
+            _context.Locality.Add(locality);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetLocality", new { id = locality.Id }, locality);
+        }
+
+        // DELETE: api/Localities/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteLocality(int id)
+        {
+            if (_context.Locality == null)
             {
                 return NotFound();
             }
-
-            var locality = await _context.Locality
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var locality = await _context.Locality.FindAsync(id);
             if (locality == null)
             {
                 return NotFound();
             }
 
-            return View(locality);
-        }
-
-        // POST: Localities/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.Locality == null)
-            {
-                return Problem("Entity set 'TinderContext.Locality'  is null.");
-            }
-            var locality = await _context.Locality.FindAsync(id);
-            if (locality != null)
-            {
-                _context.Locality.Remove(locality);
-            }
-            
+            _context.Locality.Remove(locality);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return NoContent();
         }
 
         private bool LocalityExists(int id)
         {
-          return (_context.Locality?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Locality?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
