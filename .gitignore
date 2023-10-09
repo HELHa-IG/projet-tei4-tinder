@@ -724,8 +724,5 @@ MigrationBackup/
 
 FodyWeavers.xsd
 
-GTAPolice/.vs/
-GTAPolice/.idea/
-
-
-GTAPolice/obj/
+.vs/
+.idea/
