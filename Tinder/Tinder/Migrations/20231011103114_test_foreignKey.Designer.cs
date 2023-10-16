@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tinder.Data;
 
@@ -11,9 +12,10 @@ using Tinder.Data;
 namespace Tinder.Migrations
 {
     [DbContext(typeof(TinderContext))]
-    partial class TinderContextModelSnapshot : ModelSnapshot
+    [Migration("20231011103114_test_foreignKey")]
+    partial class test_foreignKey
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -152,7 +154,7 @@ namespace Tinder.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("LocalityId")
+                    b.Property<int>("IdLocality")
                         .HasColumnType("int");
 
                     b.Property<string>("Nom")
@@ -177,18 +179,18 @@ namespace Tinder.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LocalityId");
+                    b.HasIndex("IdLocality");
 
                     b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Tinder.Models.Users", b =>
                 {
-                    b.HasOne("Tinder.Models.Locality", "Locality")
+                    b.HasOne("Tinder.Models.Locality", null)
                         .WithMany("Users")
-                        .HasForeignKey("LocalityId");
-
-                    b.Navigation("Locality");
+                        .HasForeignKey("IdLocality")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Tinder.Models.Locality", b =>

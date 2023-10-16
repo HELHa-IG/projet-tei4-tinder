@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tinder.Data;
 
@@ -11,9 +12,10 @@ using Tinder.Data;
 namespace Tinder.Migrations
 {
     [DbContext(typeof(TinderContext))]
-    partial class TinderContextModelSnapshot : ModelSnapshot
+    [Migration("20231010131120_modifDateFormat")]
+    partial class modifDateFormat
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -152,8 +154,9 @@ namespace Tinder.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("LocalityId")
-                        .HasColumnType("int");
+                    b.Property<string>("IdLocality")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Nom")
                         .IsRequired()
@@ -177,23 +180,7 @@ namespace Tinder.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LocalityId");
-
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("Tinder.Models.Users", b =>
-                {
-                    b.HasOne("Tinder.Models.Locality", "Locality")
-                        .WithMany("Users")
-                        .HasForeignKey("LocalityId");
-
-                    b.Navigation("Locality");
-                });
-
-            modelBuilder.Entity("Tinder.Models.Locality", b =>
-                {
-                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }

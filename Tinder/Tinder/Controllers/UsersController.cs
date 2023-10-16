@@ -29,7 +29,7 @@ namespace Tinder.Controllers
           {
               return NotFound();
           }
-            return await _context.Users.ToListAsync();
+            return await _context.Users.Include(user => user.Locality ).ToListAsync();
         }
 
         // GET: api/Users/5

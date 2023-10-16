@@ -11,6 +11,6 @@
         public string PhotoJson { get; set; }
         public string Email { get; set;}
         public string Password { get; set;}
-        public string IdLocality { get; set;}
+        public virtual Locality? Locality { get; set;}
     }
 }
