@@ -10,13 +10,8 @@ namespace Tinder.Models
         public string Longitude { get; set; }
         public string Latitude { get; set; }
 
-        
         [JsonIgnore]
-        public ICollection<Users> Users { get; set; }
+        public virtual List<Users>? Users { get; set; }
             
-        public Locality()
-        {
-            Users = new List<Users>();
-        }
     }
 }
