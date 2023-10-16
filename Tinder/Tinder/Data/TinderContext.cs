@@ -23,5 +23,12 @@ namespace Tinder.Data
         public DbSet<Tinder.Models.Questions>? Questions { get; set; }
 
         public DbSet<Tinder.Models.Users>? Users { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Locality>().HasMany(l => l.Users).WithOne().HasForeignKey(u => u.IdLocality);
+        }
+
     }
 }

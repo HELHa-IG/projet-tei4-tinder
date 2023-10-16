@@ -1,4 +1,6 @@
-﻿namespace Tinder.Models
+﻿using System.Text.Json.Serialization;
+
+namespace Tinder.Models
 {
     public class Locality
     {
@@ -7,5 +9,14 @@
         public string Pays { get; set; }
         public string Longitude { get; set; }
         public string Latitude { get; set; }
+
+        
+        [JsonIgnore]
+        public ICollection<Users> Users { get; set; }
+            
+        public Locality()
+        {
+            Users = new List<Users>();
+        }
     }
 }
