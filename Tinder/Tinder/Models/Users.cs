@@ -24,5 +24,7 @@ namespace Tinder.Models
         public int LocalityId { get; set; }
         [ForeignKey("LocalityId")]
         public virtual Locality Locality { get; set; }
+
+        public virtual List<Questions> Questions { get; set; }
     }
 }
