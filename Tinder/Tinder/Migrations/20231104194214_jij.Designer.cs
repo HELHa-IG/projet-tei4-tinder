@@ -12,8 +12,8 @@ using Tinder.Data;
 namespace Tinder.Migrations
 {
     [DbContext(typeof(TinderContext))]
-    [Migration("20231104145819_ForeignKeyUserLocality")]
-    partial class ForeignKeyUserLocality
+    [Migration("20231104194214_jij")]
+    partial class jij
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -87,13 +87,11 @@ namespace Tinder.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("IdUser01")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("IdUser01")
+                        .HasColumnType("int");
 
-                    b.Property<string>("IdUser02")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("IdUser02")
+                        .HasColumnType("int");
 
                     b.Property<string>("ScoreUser01")
                         .IsRequired()
@@ -122,15 +120,19 @@ namespace Tinder.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("IdUser")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("IdUser")
+                        .HasColumnType("int");
 
                     b.Property<string>("QuestionJson")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Questions");
                 });
@@ -198,6 +200,16 @@ namespace Tinder.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("Tinder.Models.Questions", b =>
+                {
+                    b.HasOne("Tinder.Models.Users", "User")
+                        .WithMany("Questions")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Tinder.Models.Users", b =>
                 {
                     b.HasOne("Tinder.Models.Locality", "Locality")
@@ -212,6 +224,11 @@ namespace Tinder.Migrations
             modelBuilder.Entity("Tinder.Models.Locality", b =>
                 {
                     b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("Tinder.Models.Users", b =>
+                {
+                    b.Navigation("Questions");
                 });
 #pragma warning restore 612, 618
         }

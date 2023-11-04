@@ -1,5 +1,6 @@
 ﻿using Microsoft.Build.Framework;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Tinder.Models
 {
@@ -24,5 +25,8 @@ namespace Tinder.Models
         public int LocalityId { get; set; }
         [ForeignKey("LocalityId")]
         public virtual Locality Locality { get; set; }
+
+        [JsonIgnore]
+        public ICollection<Questions>? Questions { get; set; }
     }
 }

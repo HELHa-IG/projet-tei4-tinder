@@ -27,6 +27,11 @@ namespace Tinder.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Users>().HasOne(u => u.Locality).WithMany(l => l.Users).HasForeignKey(u => u.LocalityId).OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Users>()
+               .HasMany(u => u.Questions)
+               .WithOne(q => q.User)
+               .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

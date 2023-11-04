@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tinder.Data;
 
@@ -11,9 +12,10 @@ using Tinder.Data;
 namespace Tinder.Migrations
 {
     [DbContext(typeof(TinderContext))]
-    partial class TinderContextModelSnapshot : ModelSnapshot
+    [Migration("20231104194433_juh")]
+    partial class juh
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -99,23 +101,13 @@ namespace Tinder.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("User01Id")
-                        .HasColumnType("int");
-
                     b.Property<bool>("User01Like")
                         .HasColumnType("bit");
-
-                    b.Property<int?>("User02Id")
-                        .HasColumnType("int");
 
                     b.Property<bool>("User02Like")
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("User01Id");
-
-                    b.HasIndex("User02Id");
 
                     b.ToTable("MatchLike");
                 });
@@ -208,27 +200,11 @@ namespace Tinder.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Tinder.Models.MatchLike", b =>
-                {
-                    b.HasOne("Tinder.Models.Users", "User01")
-                        .WithMany()
-                        .HasForeignKey("User01Id");
-
-                    b.HasOne("Tinder.Models.Users", "User02")
-                        .WithMany()
-                        .HasForeignKey("User02Id");
-
-                    b.Navigation("User01");
-
-                    b.Navigation("User02");
-                });
-
             modelBuilder.Entity("Tinder.Models.Questions", b =>
                 {
                     b.HasOne("Tinder.Models.Users", "User")
                         .WithMany("Questions")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
