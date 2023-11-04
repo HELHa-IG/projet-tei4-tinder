@@ -40,7 +40,7 @@ namespace Tinder.Controllers
         }
 
         [HttpPost("login")]
-        public ActionResult<Users> Login(Users request)
+        public ActionResult<Users> Login(LoginRequest request)
         {
             if (user.Email != request.Email)
             {
@@ -60,10 +60,10 @@ namespace Tinder.Controllers
         private string CreateToken(Users user)
         {
             List<Claim> claims = new List<Claim> {
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, "Admin"),
-                new Claim(ClaimTypes.Role, "User"),
-            };
+        new Claim(ClaimTypes.Email, user.Email),
+        new Claim(ClaimTypes.Role, user.Role),
+        new Claim("Id", user.Id.ToString()),
+        };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
                 _configuration.GetSection("AppSettings:Token").Value!));
@@ -80,6 +80,7 @@ namespace Tinder.Controllers
 
             return jwt;
         }
+
     }
 
 
