@@ -181,16 +181,38 @@ namespace Tinder.Controllers
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(this._applicationSettings.Secret);
+
+            if (_context.Users == null)
+            {
+                return Problem("Entity set 'AuthentificationTinderContext.Users'  is null.");
+            }
+
+            var userWithLocality = _context.Users.Include(u => u.Locality).Where(u => u.Id == user.Id).FirstOrDefault();
+
+            if (userWithLocality == null)
+            {
+                return Problem("Error with userWithLocality");
+            }
+
+
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[] {
+                    new Claim("UserId", user.Id.ToString()),
                     new Claim("FirstName", user.FirstName),
                     new Claim("LastName", user.LastName),
-                    new Claim("Birthday",user.Birthday.ToString("yyyy-MM-dd")),
+                    new Claim("Birthday", user.Birthday.ToString("yyyy-MM-dd")),
                     new Claim("Hobbys", user.Hobbys),
                     new Claim("PhotosJson", user.PhotoJson),
                     new Claim(ClaimTypes.Email, user.Email),
-                    new Claim(ClaimTypes.Role, user.Role)
+                    new Claim(ClaimTypes.Role, user.Role),
+                    new Claim("Locality", userWithLocality.Locality.Id.ToString()),
+                    new Claim("City", userWithLocality.Locality.Ville),
+                    new Claim("Country", userWithLocality.Locality.Pays), 
+                    new Claim("Longitude", userWithLocality.Locality.Longitude), 
+                    new Claim("Latitude", userWithLocality.Locality.Latitude) 
+
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature)

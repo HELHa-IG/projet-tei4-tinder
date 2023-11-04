@@ -16,7 +16,7 @@ namespace Tinder.Data
 
         public DbSet<Tinder.Models.Discussion> Discussion { get; set; } = default!;
 
-        public DbSet<Tinder.Models.Locality>? Locality { get; set; }
+        public DbSet<Tinder.Models.Locality> Locality { get; set; }
 
         public DbSet<Tinder.Models.MatchLike>? MatchLike { get; set; }
 
