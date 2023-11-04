@@ -28,5 +28,17 @@ namespace Tinder.Models
 
         [JsonIgnore]
         public ICollection<Questions>? Questions { get; set; }
+
+        [JsonIgnore]
+        public ICollection<MatchLike>? MatchLike01 { get; set; }
+
+        [JsonIgnore]
+        public ICollection<MatchLike>? MatchLike02 { get; set; }
+
+        [JsonIgnore]
+        public ICollection<Discussion>? Discussion01 { get; set; }
+
+        [JsonIgnore]
+        public ICollection<Discussion>? Discussion02 { get; set; }
     }
 }

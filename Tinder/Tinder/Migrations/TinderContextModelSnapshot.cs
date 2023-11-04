@@ -27,23 +27,31 @@ namespace Tinder.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("IdUser01")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("IdUser01")
+                        .HasColumnType("int");
 
-                    b.Property<string>("IdUser02")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("IdUser02")
+                        .HasColumnType("int");
 
                     b.Property<string>("Message")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("User01Id")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("User02Id")
+                        .HasColumnType("int");
 
                     b.Property<string>("dates")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("User01Id");
+
+                    b.HasIndex("User02Id");
 
                     b.ToTable("Discussion");
                 });
@@ -208,15 +216,34 @@ namespace Tinder.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("Tinder.Models.Discussion", b =>
+                {
+                    b.HasOne("Tinder.Models.Users", "User01")
+                        .WithMany("Discussion01")
+                        .HasForeignKey("User01Id")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("Tinder.Models.Users", "User02")
+                        .WithMany("Discussion02")
+                        .HasForeignKey("User02Id")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("User01");
+
+                    b.Navigation("User02");
+                });
+
             modelBuilder.Entity("Tinder.Models.MatchLike", b =>
                 {
                     b.HasOne("Tinder.Models.Users", "User01")
-                        .WithMany()
-                        .HasForeignKey("User01Id");
+                        .WithMany("MatchLike01")
+                        .HasForeignKey("User01Id")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("Tinder.Models.Users", "User02")
-                        .WithMany()
-                        .HasForeignKey("User02Id");
+                        .WithMany("MatchLike02")
+                        .HasForeignKey("User02Id")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("User01");
 
@@ -251,6 +278,14 @@ namespace Tinder.Migrations
 
             modelBuilder.Entity("Tinder.Models.Users", b =>
                 {
+                    b.Navigation("Discussion01");
+
+                    b.Navigation("Discussion02");
+
+                    b.Navigation("MatchLike01");
+
+                    b.Navigation("MatchLike02");
+
                     b.Navigation("Questions");
                 });
 #pragma warning restore 612, 618

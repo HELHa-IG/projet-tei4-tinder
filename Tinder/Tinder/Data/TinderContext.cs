@@ -32,6 +32,27 @@ namespace Tinder.Data
                .HasMany(u => u.Questions)
                .WithOne(q => q.User)
                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Users>()
+               .HasMany(u => u.MatchLike01)
+               .WithOne(q => q.User01)
+               .OnDelete(DeleteBehavior.NoAction);  
+
+            modelBuilder.Entity<Users>()
+               .HasMany(u => u.MatchLike02)
+               .WithOne(q => q.User02)
+               .OnDelete(DeleteBehavior.NoAction);  
+
+            modelBuilder.Entity<Users>()
+               .HasMany(u => u.Discussion01)
+               .WithOne(q => q.User01)
+               .OnDelete(DeleteBehavior.NoAction);  
+
+            modelBuilder.Entity<Users>()
+               .HasMany(u => u.Discussion02)
+               .WithOne(q => q.User02)
+               .OnDelete(DeleteBehavior.NoAction); 
+
         }
     }
 }
