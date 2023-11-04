@@ -152,8 +152,13 @@ namespace Tinder.Controllers
             return CreatedAtAction("GetUsers", new { id = user.Id }, user);
         }
 
+        public TinderContext Get_context()
+        {
+            return _context;
+        }
+
         [HttpPost("Login")]
-        public IActionResult Login([FromBody] Login model)
+        public IActionResult Login([FromBody] Login model, TinderContext _context)
         {
             if (_context.Users == null)
             {
