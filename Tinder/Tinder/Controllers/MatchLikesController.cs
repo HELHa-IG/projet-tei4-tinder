@@ -120,5 +120,25 @@ namespace Tinder.Controllers
         {
             return (_context.MatchLike?.Any(e => e.Id == id)).GetValueOrDefault();
         }
+
+        //Check if two person match <3
+        [HttpGet("GetMatches/{id}")]
+        public ActionResult<IEnumerable<MatchLike>> GetMatches(string id)
+        {
+            if (_context.MatchLike == null)
+            {
+                return NotFound();
+            }
+            var allMatches = _context.MatchLike.ToList();
+
+            // Check if user and match true
+            var filteredMatches = allMatches.Where(match =>
+                (match.IdUser01.CompareTo(id) < 0 || match.IdUser02.CompareTo(id) < 0) ||
+                (match.User01Like && match.User02Like)
+            ).ToList();
+
+            //return match list
+            return Ok(filteredMatches);
+        }
     }
 }
