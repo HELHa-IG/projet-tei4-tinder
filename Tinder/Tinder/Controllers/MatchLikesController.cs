@@ -131,7 +131,8 @@ namespace Tinder.Controllers
             }
             var allMatches = _context.MatchLike.ToList();
 
-            // Check if user and match true
+            // Nous allons récupérer uniquement les utilisateurs qui se sont match,
+            // et dans le front, nous n'aurons qu'à vérifier si les scores sont vides pour afficher le questionnaire
             var filteredMatches = allMatches.Where(match =>
                 (match.IdUser01.CompareTo(id) < 0 || match.IdUser02.CompareTo(id) < 0) ||
                 (match.User01Like && match.User02Like)
