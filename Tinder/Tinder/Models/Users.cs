@@ -23,6 +23,6 @@ namespace Tinder.Models
         public DateTime TokenExpires { get; set; }
         public int LocalityId { get; set; }
         [ForeignKey("LocalityId")]
-        public virtual Locality? Locality { get; set; }
+        public virtual Locality Locality { get; set; }
     }
 }
