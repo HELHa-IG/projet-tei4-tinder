@@ -160,6 +160,9 @@ namespace Tinder.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("LocalityId")
+                        .HasColumnType("int");
+
                     b.Property<byte[]>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("varbinary(max)");
@@ -188,7 +191,25 @@ namespace Tinder.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("LocalityId");
+
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Tinder.Models.Users", b =>
+                {
+                    b.HasOne("Tinder.Models.Locality", "Locality")
+                        .WithMany("Users")
+                        .HasForeignKey("LocalityId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Locality");
+                });
+
+            modelBuilder.Entity("Tinder.Models.Locality", b =>
+                {
+                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }

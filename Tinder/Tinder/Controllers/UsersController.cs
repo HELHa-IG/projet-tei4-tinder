@@ -26,7 +26,7 @@ namespace Tinder.Controllers
         }
 
         // GET: api/Users
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "string")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Users>>> GetUsers()
         {
@@ -34,7 +34,7 @@ namespace Tinder.Controllers
             {
                 return NotFound();
             }
-            return await _context.Users.ToListAsync();
+            return await _context.Users.Include(model => model.Locality).ToListAsync();
         }
 
         // GET: api/Users/5
@@ -89,7 +89,6 @@ namespace Tinder.Controllers
         }
 
         // DELETE: api/Users/5
-        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUsers(int id)
         {
@@ -127,7 +126,9 @@ namespace Tinder.Controllers
                 PhotoJson = model.PhotoJson,
                 Email = model.Email,
                 Role = model.Role,
-                Token = ""
+                Token = "",
+                Locality = model.Locality,
+                
             };
 
             if (model.ConfirmPassword == model.Password)
@@ -220,7 +221,6 @@ namespace Tinder.Controllers
             {
                 return Problem("Entity set 'AuthentificationTinderContext.Users'  is null.");
             }
-
             _context.Users.Update(user);
             _context.SaveChanges();
 
