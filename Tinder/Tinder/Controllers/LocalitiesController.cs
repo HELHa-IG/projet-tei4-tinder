@@ -100,6 +100,11 @@ namespace Tinder.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteLocality(int id)
         {
+            if (_context.Users == null)
+            {
+                return Problem("Entity set 'AuthentificationTinderContext.Users'  is null.");
+            }
+
             if (_context.Locality == null)
             {
                 return NotFound();
@@ -108,6 +113,12 @@ namespace Tinder.Controllers
             if (locality == null)
             {
                 return NotFound();
+            }
+
+            // Vérifiez s'il y a des utilisateurs associés à cette localité
+            if (_context.Users.Any(u => u.LocalityId == id))
+            {
+                return BadRequest("Suppression de la localité impossible car elle est associée à des utilisateurs.");
             }
 
             _context.Locality.Remove(locality);

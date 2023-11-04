@@ -1,4 +1,5 @@
 ﻿using Microsoft.Build.Framework;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Tinder.Models
 {
@@ -20,5 +21,8 @@ namespace Tinder.Models
         public string Token { get; set; }
         public DateTime TokenCreated { get; set; }
         public DateTime TokenExpires { get; set; }
+        public int LocalityId { get; set; }
+        [ForeignKey("LocalityId")]
+        public virtual Locality? Locality { get; set; }
     }
 }

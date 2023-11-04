@@ -20,5 +20,6 @@ namespace Tinder.Models
         public string Password { get; set; }
         [Required]
         public string ConfirmPassword { get; set; }
+        public virtual Locality? Locality { get; set; }
     }
 }
