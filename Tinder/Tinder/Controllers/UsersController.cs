@@ -26,7 +26,7 @@ namespace Tinder.Controllers
         }
 
         // GET: api/Users
-        [Authorize(Roles = "string")]
+        [Authorize(Roles = "admin")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Users>>> GetUsers()
         {
@@ -38,7 +38,7 @@ namespace Tinder.Controllers
         }
 
         // GET: api/Users/5
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<Users>> GetUsers(int id)
         {
@@ -58,23 +58,59 @@ namespace Tinder.Controllers
 
         // PUT: api/Users/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUsers(int id, Users users)
+        [Authorize]
+        public async Task<IActionResult> PutUsers(int id, [FromBody] Register model)
         {
-            if (id != users.Id)
+            var existingUser = await _context.Users.FindAsync(id);
+
+            if (existingUser == null)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            _context.Entry(users).State = EntityState.Modified;
+            existingUser.FirstName = model.FirstName;
+            existingUser.LastName = model.LastName;
+            existingUser.Birthday = model.Birthday;
+            existingUser.Hobbys = model.Hobbys;
+            existingUser.PhotoJson = model.PhotoJson;
+            existingUser.Email = model.Email;
+            existingUser.Role = model.Role;
+
+            if(model.Locality != null)
+            {
+                var existingLocality = _context.Locality.FirstOrDefault(l => l.Equals(model.Locality));
+
+                if (existingLocality != null)
+                {
+                    existingUser.Locality = existingLocality;
+                }
+                else
+                {
+                    // Si elle n'existe pas, vous pouvez créer une nouvelle "locality"
+                    existingUser.Locality = model.Locality;
+                }
+            }
+            if (model.ConfirmPassword == model.Password)
+            {
+                using HMACSHA512? hmac = new();
+                existingUser.PasswordSalt = hmac.Key;
+                existingUser.PasswordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(model.Password));
+            }
+            else
+            {
+                return BadRequest("Passwords Don't Match");
+            }
 
             try
             {
+                _context.Entry(existingUser).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
             }
+
             catch (DbUpdateConcurrencyException)
             {
+
                 if (!UsersExists(id))
                 {
                     return NotFound();
@@ -90,23 +126,45 @@ namespace Tinder.Controllers
 
         // DELETE: api/Users/5
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteUsers(int id)
         {
             if (_context.Users == null)
             {
                 return NotFound();
             }
-            var users = await _context.Users.FindAsync(id);
-            if (users == null)
+
+            if (_context.Questions == null)
             {
                 return NotFound();
             }
 
-            _context.Users.Remove(users);
+            if (_context.MatchLike == null)
+            {
+                return NotFound();
+            }
+
+            var user = await _context.Users.FindAsync(id);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            // Récupérer toutes les MatchLike associées à l'utilisateur
+            var matchLikesToRemove = _context.MatchLike.Where(ml => ml.IdUser01 == id || ml.IdUser02 == id).ToList();
+            _context.MatchLike.RemoveRange(matchLikesToRemove); // Supprimer toutes les MatchLike associées
+
+            // Récupérer toutes les questions associées à l'utilisateur
+            var questionsToDelete = _context.Questions.Where(q => q.IdUser == id);
+            _context.Questions.RemoveRange(questionsToDelete); // Supprimer toutes les questions associées
+
+            _context.Users.Remove(user); // Supprimer l'utilisateur
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
+
 
         private bool UsersExists(int id)
         {
@@ -126,7 +184,6 @@ namespace Tinder.Controllers
                 PhotoJson = model.PhotoJson,
                 Email = model.Email,
                 Role = model.Role,
-                Token = "",
                 Locality = model.Locality,
                 
             };
@@ -207,9 +264,13 @@ namespace Tinder.Controllers
                     new Claim("PhotosJson", user.PhotoJson),
                     new Claim(ClaimTypes.Email, user.Email),
                     new Claim(ClaimTypes.Role, user.Role),
-                    new Claim("Locality", userWithLocality.Locality.Id.ToString()),
+                    new Claim("LocalityI_Id", userWithLocality.Locality.Id.ToString()),
+                    new Claim("Country", userWithLocality.Locality.Pays),
+                    new Claim("Region", userWithLocality.Locality.Province),
                     new Claim("City", userWithLocality.Locality.Ville),
-                    new Claim("Country", userWithLocality.Locality.Pays), 
+                    new Claim("PostalCode", userWithLocality.Locality.CodePostal),
+                    new Claim("Street", userWithLocality.Locality.Rue),
+                    new Claim("Number", userWithLocality.Locality.Numero),
                     new Claim("Longitude", userWithLocality.Locality.Longitude), 
                     new Claim("Latitude", userWithLocality.Locality.Latitude) 
 
@@ -230,21 +291,16 @@ namespace Tinder.Controllers
                      SameSite = SameSiteMode.None
                  });
 
-            user.Token = encrypterToken;
-            user.TokenCreated = DateTime.UtcNow;
-            user.TokenExpires = (DateTime)tokenDescriptor.Expires;
-
-            if (_context.Users == null)
-            {
-                return Problem("Entity set 'AuthentificationTinderContext.Users'  is null.");
-            }
-            _context.Users.Update(user);
-            _context.SaveChanges();
-
             return new { token = encrypterToken, username = user.FirstName };
         }
 
-
+        [HttpPost("Logout")]
+        [Authorize]
+        public IActionResult Logout()
+        {
+            HttpContext.Response.Cookies.Delete("token");
+            return Ok();
+        }
         private bool CheckPassword(string password, Users user)
         {
             bool result;

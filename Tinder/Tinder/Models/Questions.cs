@@ -6,7 +6,8 @@ namespace Tinder.Models
     public class Questions
     {
         public int Id { get; set; }
-        public string QuestionJson { get; set; }
+        public string Question { get; set; }
+        public string Reponse { get; set; }
 
         [ForeignKey("IdUser")]
         public int IdUser { get; set; }

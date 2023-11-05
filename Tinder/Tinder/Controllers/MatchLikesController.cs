@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +24,7 @@ namespace Tinder.Controllers
 
         // GET: api/MatchLikes
         [HttpGet]
+        [Authorize(Roles ="admin")]
         public async Task<ActionResult<IEnumerable<MatchLike>>> GetMatchLike()
         {
           if (_context.MatchLike == null)
@@ -34,6 +36,7 @@ namespace Tinder.Controllers
 
         // GET: api/MatchLikes/5
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<MatchLike>> GetMatchLike(int id)
         {
           if (_context.MatchLike == null)
@@ -53,6 +56,7 @@ namespace Tinder.Controllers
         // PUT: api/MatchLikes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<IActionResult> PutMatchLike(int id, MatchLike matchLike)
         {
             if (id != matchLike.Id)
@@ -84,12 +88,28 @@ namespace Tinder.Controllers
         // POST: api/MatchLikes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<MatchLike>> PostMatchLike(MatchLike matchLike)
         {
-          if (_context.MatchLike == null)
-          {
-              return Problem("Entity set 'TinderContext.MatchLike'  is null.");
-          }
+            if (_context.MatchLike == null)
+            {
+                return Problem("Entity set 'TinderContext.MatchLike' is null.");
+            }
+
+            if (_context.Users == null)
+            {
+                return Problem("Entity set 'TinderContext.Users' is null.");
+            }
+
+            // Vérifiez si les IdUsers spécifiés existent
+            var user1Exists = await _context.Users.AnyAsync(u => u.Id == matchLike.IdUser01);
+            var user2Exists = await _context.Users.AnyAsync(u => u.Id == matchLike.IdUser02);
+
+            if (!user1Exists || !user2Exists)
+            {
+                return BadRequest("One or both of the specified IdUsers do not exist.");
+            }
+
             _context.MatchLike.Add(matchLike);
             await _context.SaveChangesAsync();
 
@@ -98,6 +118,7 @@ namespace Tinder.Controllers
 
         // DELETE: api/MatchLikes/5
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteMatchLike(int id)
         {
             if (_context.MatchLike == null)

@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Tinder.Models;
 
 namespace Tinder.Data
 {
     public class TinderContext : DbContext
     {
-        public TinderContext (DbContextOptions<TinderContext> options)
+        public TinderContext(DbContextOptions<TinderContext> options)
             : base(options)
         {
         }
@@ -26,7 +22,7 @@ namespace Tinder.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Users>().HasOne(u => u.Locality).WithMany(l => l.Users).HasForeignKey(u => u.LocalityId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Users>().HasOne(u => u.Locality).WithMany(l => l.Users).HasForeignKey(u => u.LocalityId).OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Users>()
                .HasMany(u => u.Questions)
@@ -34,24 +30,26 @@ namespace Tinder.Data
                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Users>()
-               .HasMany(u => u.MatchLike01)
-               .WithOne(q => q.User01)
-               .OnDelete(DeleteBehavior.NoAction);  
+                .HasMany(u => u.MatchLike01)
+                .WithOne(q => q.User01)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Users>()
-               .HasMany(u => u.MatchLike02)
-               .WithOne(q => q.User02)
-               .OnDelete(DeleteBehavior.NoAction);  
+                .HasMany(u => u.MatchLike02)
+                .WithOne(q => q.User02)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Users>()
-               .HasMany(u => u.Discussion01)
-               .WithOne(q => q.User01)
-               .OnDelete(DeleteBehavior.NoAction);  
+            modelBuilder.Entity<Discussion>()
+                .HasOne(d => d.User01)
+                .WithMany(u => u.Discussion01)
+                .HasForeignKey(d => d.IdUser01)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Users>()
-               .HasMany(u => u.Discussion02)
-               .WithOne(q => q.User02)
-               .OnDelete(DeleteBehavior.NoAction); 
+            modelBuilder.Entity<Discussion>()
+                .HasOne(d => d.User02)
+                .WithMany(u => u.Discussion02)
+                .HasForeignKey(d => d.IdUser02)
+                .OnDelete(DeleteBehavior.Restrict);
 
         }
     }

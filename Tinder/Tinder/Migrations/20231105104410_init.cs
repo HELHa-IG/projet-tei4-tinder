@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Tinder.Migrations
 {
-    public partial class tnder : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -15,8 +15,12 @@ namespace Tinder.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Ville = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Pays = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Province = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Ville = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CodePostal = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Rue = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Numero = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Longitude = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Latitude = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
@@ -40,9 +44,6 @@ namespace Tinder.Migrations
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PasswordSalt = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
                     PasswordHash = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
-                    Token = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TokenCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    TokenExpires = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LocalityId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -53,7 +54,7 @@ namespace Tinder.Migrations
                         column: x => x.LocalityId,
                         principalTable: "Locality",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -64,23 +65,23 @@ namespace Tinder.Migrations
                     Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     dates = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IdUser01 = table.Column<int>(type: "int", nullable: false),
-                    IdUser02 = table.Column<int>(type: "int", nullable: false),
-                    User02Id = table.Column<int>(type: "int", nullable: true),
-                    User01Id = table.Column<int>(type: "int", nullable: true)
+                    IdUser02 = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Discussion", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Discussion_Users_User01Id",
-                        column: x => x.User01Id,
+                        name: "FK_Discussion_Users_IdUser01",
+                        column: x => x.IdUser01,
                         principalTable: "Users",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Discussion_Users_User02Id",
-                        column: x => x.User02Id,
+                        name: "FK_Discussion_Users_IdUser02",
+                        column: x => x.IdUser02,
                         principalTable: "Users",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -105,12 +106,14 @@ namespace Tinder.Migrations
                         name: "FK_MatchLike_Users_User01Id",
                         column: x => x.User01Id,
                         principalTable: "Users",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_MatchLike_Users_User02Id",
                         column: x => x.User02Id,
                         principalTable: "Users",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -119,7 +122,8 @@ namespace Tinder.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    QuestionJson = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Question = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Reponse = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IdUser = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: true)
                 },
@@ -135,14 +139,14 @@ namespace Tinder.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Discussion_User01Id",
+                name: "IX_Discussion_IdUser01",
                 table: "Discussion",
-                column: "User01Id");
+                column: "IdUser01");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Discussion_User02Id",
+                name: "IX_Discussion_IdUser02",
                 table: "Discussion",
-                column: "User02Id");
+                column: "IdUser02");
 
             migrationBuilder.CreateIndex(
                 name: "IX_MatchLike_User01Id",
