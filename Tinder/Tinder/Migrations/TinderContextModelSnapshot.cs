@@ -139,7 +139,11 @@ namespace Tinder.Migrations
                     b.Property<int>("IdUser")
                         .HasColumnType("int");
 
-                    b.Property<string>("QuestionJson")
+                    b.Property<string>("Question")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Reponse")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

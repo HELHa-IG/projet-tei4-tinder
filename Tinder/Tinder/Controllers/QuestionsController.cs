@@ -86,12 +86,29 @@ namespace Tinder.Controllers
         [HttpPost]
         public async Task<ActionResult<Questions>> PostQuestions(Questions questions)
         {
-          if (_context.Questions == null)
-          {
-              return Problem("Entity set 'TinderContext.Questions'  is null.");
-          }
-            _context.Questions.Add(questions);
-            await _context.SaveChangesAsync();
+            if (_context.Questions == null)
+            {
+                return Problem("Entity set 'TinderContext.Questions'  is null.");
+            }
+
+            if (_context.Users == null)
+            {
+                return Problem("Entity set 'TinderContext.Questions'  is null.");
+            } 
+
+            var user = await _context.Users.FindAsync(questions.IdUser);
+
+            if (user != null)
+            {
+                // L'utilisateur existe, vous pouvez insérer la question
+                _context.Questions.Add(questions);
+                await _context.SaveChangesAsync();
+                
+            }
+            else
+            {
+                return Problem("IdUser non valide");
+            }
 
             return CreatedAtAction("GetQuestions", new { id = questions.Id }, questions);
         }

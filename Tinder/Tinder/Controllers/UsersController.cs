@@ -26,7 +26,6 @@ namespace Tinder.Controllers
         }
 
         // GET: api/Users
-        [Authorize(Roles = "string")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Users>>> GetUsers()
         {
@@ -96,17 +95,30 @@ namespace Tinder.Controllers
             {
                 return NotFound();
             }
-            var users = await _context.Users.FindAsync(id);
-            if (users == null)
+
+            if (_context.Questions == null)
             {
                 return NotFound();
             }
 
-            _context.Users.Remove(users);
+            var user = await _context.Users.FindAsync(id);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            // Récupérer toutes les questions associées à l'utilisateur
+            var questionsToDelete = _context.Questions.Where(q => q.IdUser == id);
+
+            _context.Questions.RemoveRange(questionsToDelete); // Supprimer toutes les questions associées
+
+            _context.Users.Remove(user); // Supprimer l'utilisateur
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
+
 
         private bool UsersExists(int id)
         {

@@ -12,8 +12,8 @@ using Tinder.Data;
 namespace Tinder.Migrations
 {
     [DbContext(typeof(TinderContext))]
-    [Migration("20231104202830_tnder")]
-    partial class tnder
+    [Migration("20231105085251_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -141,7 +141,11 @@ namespace Tinder.Migrations
                     b.Property<int>("IdUser")
                         .HasColumnType("int");
 
-                    b.Property<string>("QuestionJson")
+                    b.Property<string>("Question")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Reponse")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
