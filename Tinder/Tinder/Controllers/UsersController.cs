@@ -227,9 +227,13 @@ namespace Tinder.Controllers
                     new Claim("PhotosJson", user.PhotoJson),
                     new Claim(ClaimTypes.Email, user.Email),
                     new Claim(ClaimTypes.Role, user.Role),
-                    new Claim("Locality", userWithLocality.Locality.Id.ToString()),
+                    new Claim("LocalityI_Id", userWithLocality.Locality.Id.ToString()),
+                    new Claim("Country", userWithLocality.Locality.Pays),
+                    new Claim("Region", userWithLocality.Locality.Province),
                     new Claim("City", userWithLocality.Locality.Ville),
-                    new Claim("Country", userWithLocality.Locality.Pays), 
+                    new Claim("PostalCode", userWithLocality.Locality.CodePostal),
+                    new Claim("Street", userWithLocality.Locality.Rue),
+                    new Claim("Number", userWithLocality.Locality.Numero),
                     new Claim("Longitude", userWithLocality.Locality.Longitude), 
                     new Claim("Latitude", userWithLocality.Locality.Latitude) 
 

@@ -15,8 +15,12 @@ namespace Tinder.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Ville = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Pays = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Province = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Ville = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CodePostal = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Rue = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Numero = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Longitude = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Latitude = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
@@ -53,7 +57,7 @@ namespace Tinder.Migrations
                         column: x => x.LocalityId,
                         principalTable: "Locality",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(

@@ -58,6 +58,10 @@ namespace Tinder.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<string>("CodePostal")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Latitude")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -66,7 +70,19 @@ namespace Tinder.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Numero")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Pays")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Province")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Rue")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -265,7 +281,7 @@ namespace Tinder.Migrations
                     b.HasOne("Tinder.Models.Locality", "Locality")
                         .WithMany("Users")
                         .HasForeignKey("LocalityId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Locality");
