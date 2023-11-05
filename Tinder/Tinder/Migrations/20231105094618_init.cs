@@ -64,23 +64,23 @@ namespace Tinder.Migrations
                     Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     dates = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IdUser01 = table.Column<int>(type: "int", nullable: false),
-                    IdUser02 = table.Column<int>(type: "int", nullable: false),
-                    User02Id = table.Column<int>(type: "int", nullable: true),
-                    User01Id = table.Column<int>(type: "int", nullable: true)
+                    IdUser02 = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Discussion", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Discussion_Users_User01Id",
-                        column: x => x.User01Id,
+                        name: "FK_Discussion_Users_IdUser01",
+                        column: x => x.IdUser01,
                         principalTable: "Users",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Discussion_Users_User02Id",
-                        column: x => x.User02Id,
+                        name: "FK_Discussion_Users_IdUser02",
+                        column: x => x.IdUser02,
                         principalTable: "Users",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -105,12 +105,14 @@ namespace Tinder.Migrations
                         name: "FK_MatchLike_Users_User01Id",
                         column: x => x.User01Id,
                         principalTable: "Users",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_MatchLike_Users_User02Id",
                         column: x => x.User02Id,
                         principalTable: "Users",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -136,14 +138,14 @@ namespace Tinder.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Discussion_User01Id",
+                name: "IX_Discussion_IdUser01",
                 table: "Discussion",
-                column: "User01Id");
+                column: "IdUser01");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Discussion_User02Id",
+                name: "IX_Discussion_IdUser02",
                 table: "Discussion",
-                column: "User02Id");
+                column: "IdUser02");
 
             migrationBuilder.CreateIndex(
                 name: "IX_MatchLike_User01Id",

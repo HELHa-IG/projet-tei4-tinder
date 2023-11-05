@@ -86,10 +86,25 @@ namespace Tinder.Controllers
         [HttpPost]
         public async Task<ActionResult<MatchLike>> PostMatchLike(MatchLike matchLike)
         {
-          if (_context.MatchLike == null)
-          {
-              return Problem("Entity set 'TinderContext.MatchLike'  is null.");
-          }
+            if (_context.MatchLike == null)
+            {
+                return Problem("Entity set 'TinderContext.MatchLike' is null.");
+            }
+
+            if (_context.Users == null)
+            {
+                return Problem("Entity set 'TinderContext.Users' is null.");
+            }
+
+            // Vérifiez si les IdUsers spécifiés existent
+            var user1Exists = await _context.Users.AnyAsync(u => u.Id == matchLike.IdUser01);
+            var user2Exists = await _context.Users.AnyAsync(u => u.Id == matchLike.IdUser02);
+
+            if (!user1Exists || !user2Exists)
+            {
+                return BadRequest("One or both of the specified IdUsers do not exist.");
+            }
+
             _context.MatchLike.Add(matchLike);
             await _context.SaveChangesAsync();
 

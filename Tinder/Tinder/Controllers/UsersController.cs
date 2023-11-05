@@ -101,6 +101,11 @@ namespace Tinder.Controllers
                 return NotFound();
             }
 
+            if (_context.MatchLike == null)
+            {
+                return NotFound();
+            }
+
             var user = await _context.Users.FindAsync(id);
 
             if (user == null)
@@ -108,9 +113,12 @@ namespace Tinder.Controllers
                 return NotFound();
             }
 
+            // Récupérer toutes les MatchLike associées à l'utilisateur
+            var matchLikesToRemove = _context.MatchLike.Where(ml => ml.IdUser01 == id || ml.IdUser02 == id).ToList();
+            _context.MatchLike.RemoveRange(matchLikesToRemove); // Supprimer toutes les MatchLike associées
+
             // Récupérer toutes les questions associées à l'utilisateur
             var questionsToDelete = _context.Questions.Where(q => q.IdUser == id);
-
             _context.Questions.RemoveRange(questionsToDelete); // Supprimer toutes les questions associées
 
             _context.Users.Remove(user); // Supprimer l'utilisateur
