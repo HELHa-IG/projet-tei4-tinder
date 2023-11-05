@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +24,7 @@ namespace Tinder.Controllers
 
         // GET: api/Localities
         [HttpGet]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult<IEnumerable<Locality>>> GetLocality()
         {
           if (_context.Locality == null)
@@ -34,6 +36,7 @@ namespace Tinder.Controllers
 
         // GET: api/Localities/5
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<Locality>> GetLocality(int id)
         {
           if (_context.Locality == null)
@@ -53,6 +56,7 @@ namespace Tinder.Controllers
         // PUT: api/Localities/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<IActionResult> PutLocality(int id, Locality locality)
         {
             if (id != locality.Id)
@@ -84,6 +88,7 @@ namespace Tinder.Controllers
         // POST: api/Localities
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<Locality>> PostLocality(Locality locality)
         {
           if (_context.Locality == null)
@@ -97,6 +102,7 @@ namespace Tinder.Controllers
         }
 
         // DELETE: api/Localities/5
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteLocality(int id)
         {

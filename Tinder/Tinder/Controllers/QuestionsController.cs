@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,7 @@ namespace Tinder.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class QuestionsController : ControllerBase
     {
         private readonly TinderContext _context;
@@ -23,6 +25,7 @@ namespace Tinder.Controllers
 
         // GET: api/Questions
         [HttpGet]
+        [Authorize(Roles ="admin")]
         public async Task<ActionResult<IEnumerable<Questions>>> GetQuestions()
         {
           if (_context.Questions == null)
@@ -33,6 +36,7 @@ namespace Tinder.Controllers
         }
 
         // GET: api/Questions/5
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<Questions>> GetQuestions(int id)
         {
@@ -52,6 +56,7 @@ namespace Tinder.Controllers
 
         // PUT: api/Questions/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutQuestions(int id, Questions questions)
         {
@@ -83,6 +88,7 @@ namespace Tinder.Controllers
 
         // POST: api/Questions
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<Questions>> PostQuestions(Questions questions)
         {
@@ -114,6 +120,7 @@ namespace Tinder.Controllers
         }
 
         // DELETE: api/Questions/5
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteQuestions(int id)
         {
