@@ -213,16 +213,6 @@ namespace Tinder.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Token")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("TokenCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("TokenExpires")
-                        .HasColumnType("datetime2");
-
                     b.HasKey("Id");
 
                     b.HasIndex("LocalityId");

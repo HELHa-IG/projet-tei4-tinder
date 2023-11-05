@@ -19,9 +19,6 @@ namespace Tinder.Models
         public byte[] PasswordSalt { get; set; }
         [Required]
         public byte[] PasswordHash { get; set; }
-        public string Token { get; set; }
-        public DateTime TokenCreated { get; set; }
-        public DateTime TokenExpires { get; set; }
         public int LocalityId { get; set; }
         [ForeignKey("LocalityId")]
         public virtual Locality Locality { get; set; }

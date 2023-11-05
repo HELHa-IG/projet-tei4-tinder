@@ -12,7 +12,7 @@ using Tinder.Data;
 namespace Tinder.Migrations
 {
     [DbContext(typeof(TinderContext))]
-    [Migration("20231105103702_init")]
+    [Migration("20231105104410_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -214,16 +214,6 @@ namespace Tinder.Migrations
                     b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Token")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("TokenCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("TokenExpires")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 

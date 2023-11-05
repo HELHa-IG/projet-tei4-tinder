@@ -44,9 +44,6 @@ namespace Tinder.Migrations
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PasswordSalt = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
                     PasswordHash = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
-                    Token = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TokenCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    TokenExpires = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LocalityId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>

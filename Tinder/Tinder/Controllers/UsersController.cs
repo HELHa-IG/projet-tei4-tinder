@@ -146,7 +146,6 @@ namespace Tinder.Controllers
                 PhotoJson = model.PhotoJson,
                 Email = model.Email,
                 Role = model.Role,
-                Token = "",
                 Locality = model.Locality,
                 
             };
@@ -253,17 +252,6 @@ namespace Tinder.Controllers
                      IsEssential = true,
                      SameSite = SameSiteMode.None
                  });
-
-            user.Token = encrypterToken;
-            user.TokenCreated = DateTime.UtcNow;
-            user.TokenExpires = (DateTime)tokenDescriptor.Expires;
-
-            if (_context.Users == null)
-            {
-                return Problem("Entity set 'AuthentificationTinderContext.Users'  is null.");
-            }
-            _context.Users.Update(user);
-            _context.SaveChanges();
 
             return new { token = encrypterToken, username = user.FirstName };
         }
