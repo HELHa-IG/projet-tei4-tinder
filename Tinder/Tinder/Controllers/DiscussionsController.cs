@@ -33,6 +33,51 @@ namespace Tinder.Controllers
         }
 
         // GET: api/Discussions/5
+        [HttpGet("{userId}")]
+        public async Task<ActionResult<IEnumerable<string>>> GetDiscussionUserNames(int userId)
+        {
+            if (_context.Discussion == null || _context.Users == null)
+            {
+                return NotFound();
+            }
+
+            // Filtrer les discussions qui impliquent l'utilisateur spécifié
+            var discussions = await _context.Discussion
+                .Where(d => d.IdUser01 == userId.ToString() || d.IdUser02 == userId.ToString())
+                .Select(d => d.IdUser02)
+                .Distinct()
+                .ToListAsync();
+
+            // Sélectionner les noms des utilisateurs avec l'ID de l'utilisateur 2
+            var userNames = await _context.Users
+                .Where(u => discussions.Contains(u.Id.ToString()))
+                .Select(u => u.FirstName)
+                .ToListAsync();
+
+            return userNames;
+        }
+
+
+        // GET: api/Discussions/5
+        [HttpGet("{discussionId}")]
+        public async Task<ActionResult<IEnumerable<string>>> GetDiscussionMessages(int discussionId)
+        {
+            if (_context.Discussion == null)
+            {
+                return NotFound();
+            }
+
+            // Filtrer les messages qui appartiennent à la discussion spécifiée
+            var messages = await _context.Discussion
+                .Where(d => d.Id == discussionId.ToString())
+                .OrderBy(d => d.dates) // Ordonner les messages par date
+                .Select(d => d.Message)
+                .ToListAsync();
+
+            return messages;
+        }
+
+        // GET: api/Discussions/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Discussion>> GetDiscussion(string id)
         {

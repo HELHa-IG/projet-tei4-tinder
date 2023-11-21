@@ -12,8 +12,8 @@ using Tinder.Data;
 namespace Tinder.Migrations
 {
     [DbContext(typeof(TinderContext))]
-    [Migration("20231104152830_JWT-User")]
-    partial class JWTUser
+    [Migration("20231121105324_test")]
+    partial class test
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
