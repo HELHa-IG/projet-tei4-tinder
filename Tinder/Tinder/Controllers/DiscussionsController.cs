@@ -68,6 +68,29 @@ namespace Tinder.Controllers
             return users;
         }
 
+        [HttpGet("{userId}/{user2Id}")]
+        public async Task<ActionResult<IEnumerable<String>>> GetDiscussionMessages(string userId, string user2Id)
+        {
+            if (_context.Discussion == null)
+            {
+                return NotFound();
+            }
+            // Rechercher les discussions où userId et user2Id sont présents, soit en tant que idUser01, soit en tant que idUser02
+            var discussions = await _context.Discussion
+              .Where(d => (d.IdUser01 == userId || d.IdUser02 == userId) && (d.IdUser01 == user2Id || d.IdUser02 == user2Id))
+              .OrderBy(d => d.dates)
+              .Select(d => d.Message) // Sélectionner les messages des discussions
+              .ToListAsync();
+
+
+            if (discussions == null || discussions.Count == 0)
+            {
+                return NotFound();
+            }
+
+            return discussions;
+        }
+
 
         // GET: api/Discussions/5
         [HttpGet("{id}")]
