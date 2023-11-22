@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using Tinder.Data;
 using Tinder.Models;
@@ -32,50 +33,41 @@ namespace Tinder.Controllers
             return await _context.Discussion.ToListAsync();
         }
 
-        // GET: api/Discussions/5
-        [HttpGet("{userId}")]
-        public async Task<ActionResult<IEnumerable<string>>> GetDiscussionUserNames(int userId)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<IEnumerable<Users>>> GetUsersFromDiscussion(string id)
         {
-            if (_context.Discussion == null || _context.Users == null)
+            // Récupérer la discussion
+            var discussion = await _context.Discussion.FindAsync(id);
+            if (discussion == null)
             {
                 return NotFound();
             }
 
-            // Filtrer les discussions qui impliquent l'utilisateur spécifié
+            // Récupérer tous les utilisateurs où votre ID est présent
             var discussions = await _context.Discussion
-                .Where(d => d.IdUser01 == userId.ToString() || d.IdUser02 == userId.ToString())
-                .Select(d => d.IdUser02)
+                .Where(d => d.IdUser01 == id || d.IdUser02 == id)
+                .ToListAsync();
+
+            // Filtrer pour prendre les ID qui sont différents de l'ID passé en paramètre
+            var userIds = discussions
+                .Select(d => d.IdUser01 == id ? d.IdUser02 : d.IdUser01)
                 .Distinct()
-                .ToListAsync();
+                .ToList();
 
-            // Sélectionner les noms des utilisateurs avec l'ID de l'utilisateur 2
-            var userNames = await _context.Users
-                .Where(u => discussions.Contains(u.Id.ToString()))
-                .Select(u => u.FirstName)
-                .ToListAsync();
-
-            return userNames;
-        }
-
-
-        // GET: api/Discussions/5
-        [HttpGet("{discussionId}")]
-        public async Task<ActionResult<IEnumerable<string>>> GetDiscussionMessages(int discussionId)
-        {
-            if (_context.Discussion == null)
+            // Récupérer dans la table users les noms des user qui ont l'id de ma liste
+            if (_context.Users == null)
             {
-                return NotFound();
+                return NotFound("Users not found");
             }
 
-            // Filtrer les messages qui appartiennent à la discussion spécifiée
-            var messages = await _context.Discussion
-                .Where(d => d.Id == discussionId.ToString())
-                .OrderBy(d => d.dates) // Ordonner les messages par date
-                .Select(d => d.Message)
+            var users = await _context.Users
+                .Where(u => userIds.Contains(u.Id.ToString()))
                 .ToListAsync();
 
-            return messages;
+            // Retourner l'id et le nom de chaque utilisateur
+            return users;
         }
+
 
         // GET: api/Discussions/5
         [HttpGet("{id}")]
