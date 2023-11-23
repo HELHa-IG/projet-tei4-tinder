@@ -35,7 +35,8 @@ namespace Tinder.Controllers
             return await _context.Discussion.ToListAsync();
         }
 
-        [HttpGet("{id}")]
+        // GET: api/Discussions/5
+        [HttpGet("{idUserSession}")]
         public async Task<ActionResult<IEnumerable<Users>>> GetUsersFromDiscussion(string id)
         {
             // Récupérer la discussion
@@ -47,12 +48,12 @@ namespace Tinder.Controllers
 
             // Récupérer tous les utilisateurs où votre ID est présent
             var discussions = await _context.Discussion
-                .Where(d => d.IdUser01 == id || d.IdUser02 == id)
+                .Where(d => d.IdUser01.ToString() == id || d.IdUser02.ToString() == id)
                 .ToListAsync();
 
             // Filtrer pour prendre les ID qui sont différents de l'ID passé en paramètre
             var userIds = discussions
-                .Select(d => d.IdUser01 == id ? d.IdUser02 : d.IdUser01)
+                .Select(d => d.IdUser01.ToString() == id ? d.IdUser02 : d.IdUser01)
                 .Distinct()
                 .ToList();
 
@@ -63,15 +64,17 @@ namespace Tinder.Controllers
             }
 
             var users = await _context.Users
-                .Where(u => userIds.Contains(u.Id.ToString()))
+                .Where(u => userIds.Contains(u.Id))
                 .ToListAsync();
 
             // Retourner l'id et le nom de chaque utilisateur
             return users;
         }
 
+
+        // GET: api/Discussions/5/3
         [HttpGet("{userId}/{user2Id}")]
-        public async Task<ActionResult<IEnumerable<String>>> GetDiscussionMessages(string userId, string user2Id)
+        public async Task<ActionResult<IEnumerable<String>>> GetDiscussionMessages(int userId, int user2Id)
         {
             if (_context.Discussion == null)
             {

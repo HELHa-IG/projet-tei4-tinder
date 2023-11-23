@@ -12,7 +12,7 @@ using Tinder.Data;
 namespace Tinder.Migrations
 {
     [DbContext(typeof(TinderContext))]
-    [Migration("20231121105324_test")]
+    [Migration("20231123082631_test")]
     partial class test
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -29,13 +29,11 @@ namespace Tinder.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("IdUser01")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("IdUser01")
+                        .HasColumnType("int");
 
-                    b.Property<string>("IdUser02")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("IdUser02")
+                        .HasColumnType("int");
 
                     b.Property<string>("Message")
                         .IsRequired()
@@ -46,6 +44,10 @@ namespace Tinder.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("IdUser01");
+
+                    b.HasIndex("IdUser02");
 
                     b.ToTable("Discussion");
                 });
@@ -58,6 +60,10 @@ namespace Tinder.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<string>("CodePostal")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Latitude")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -66,7 +72,19 @@ namespace Tinder.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Numero")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Pays")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Province")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Rue")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -87,13 +105,11 @@ namespace Tinder.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("IdUser01")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("IdUser01")
+                        .HasColumnType("int");
 
-                    b.Property<string>("IdUser02")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("IdUser02")
+                        .HasColumnType("int");
 
                     b.Property<string>("ScoreUser01")
                         .IsRequired()
@@ -103,13 +119,23 @@ namespace Tinder.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("User01Id")
+                        .HasColumnType("int");
+
                     b.Property<bool>("User01Like")
                         .HasColumnType("bit");
+
+                    b.Property<int?>("User02Id")
+                        .HasColumnType("int");
 
                     b.Property<bool>("User02Like")
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("User01Id");
+
+                    b.HasIndex("User02Id");
 
                     b.ToTable("MatchLike");
                 });
@@ -122,15 +148,23 @@ namespace Tinder.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("IdUser")
+                    b.Property<int>("IdUser")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Question")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("QuestionJson")
+                    b.Property<string>("Reponse")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Questions");
                 });
@@ -181,16 +215,6 @@ namespace Tinder.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Token")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("TokenCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("TokenExpires")
-                        .HasColumnType("datetime2");
-
                     b.HasKey("Id");
 
                     b.HasIndex("LocalityId");
@@ -198,12 +222,58 @@ namespace Tinder.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("Tinder.Models.Discussion", b =>
+                {
+                    b.HasOne("Tinder.Models.Users", "User01")
+                        .WithMany("Discussion01")
+                        .HasForeignKey("IdUser01")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Tinder.Models.Users", "User02")
+                        .WithMany("Discussion02")
+                        .HasForeignKey("IdUser02")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User01");
+
+                    b.Navigation("User02");
+                });
+
+            modelBuilder.Entity("Tinder.Models.MatchLike", b =>
+                {
+                    b.HasOne("Tinder.Models.Users", "User01")
+                        .WithMany("MatchLike01")
+                        .HasForeignKey("User01Id")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Tinder.Models.Users", "User02")
+                        .WithMany("MatchLike02")
+                        .HasForeignKey("User02Id")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("User01");
+
+                    b.Navigation("User02");
+                });
+
+            modelBuilder.Entity("Tinder.Models.Questions", b =>
+                {
+                    b.HasOne("Tinder.Models.Users", "User")
+                        .WithMany("Questions")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Tinder.Models.Users", b =>
                 {
                     b.HasOne("Tinder.Models.Locality", "Locality")
                         .WithMany("Users")
                         .HasForeignKey("LocalityId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Locality");
@@ -212,6 +282,19 @@ namespace Tinder.Migrations
             modelBuilder.Entity("Tinder.Models.Locality", b =>
                 {
                     b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("Tinder.Models.Users", b =>
+                {
+                    b.Navigation("Discussion01");
+
+                    b.Navigation("Discussion02");
+
+                    b.Navigation("MatchLike01");
+
+                    b.Navigation("MatchLike02");
+
+                    b.Navigation("Questions");
                 });
 #pragma warning restore 612, 618
         }
