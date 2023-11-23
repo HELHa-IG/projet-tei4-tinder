@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using Tinder.Data;
 using Tinder.Models;
@@ -33,6 +34,65 @@ namespace Tinder.Controllers
           }
             return await _context.Discussion.ToListAsync();
         }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<IEnumerable<Users>>> GetUsersFromDiscussion(string id)
+        {
+            // Récupérer la discussion
+            var discussion = await _context.Discussion.FindAsync(id);
+            if (discussion == null)
+            {
+                return NotFound();
+            }
+
+            // Récupérer tous les utilisateurs où votre ID est présent
+            var discussions = await _context.Discussion
+                .Where(d => d.IdUser01 == id || d.IdUser02 == id)
+                .ToListAsync();
+
+            // Filtrer pour prendre les ID qui sont différents de l'ID passé en paramètre
+            var userIds = discussions
+                .Select(d => d.IdUser01 == id ? d.IdUser02 : d.IdUser01)
+                .Distinct()
+                .ToList();
+
+            // Récupérer dans la table users les noms des user qui ont l'id de ma liste
+            if (_context.Users == null)
+            {
+                return NotFound("Users not found");
+            }
+
+            var users = await _context.Users
+                .Where(u => userIds.Contains(u.Id.ToString()))
+                .ToListAsync();
+
+            // Retourner l'id et le nom de chaque utilisateur
+            return users;
+        }
+
+        [HttpGet("{userId}/{user2Id}")]
+        public async Task<ActionResult<IEnumerable<String>>> GetDiscussionMessages(string userId, string user2Id)
+        {
+            if (_context.Discussion == null)
+            {
+                return NotFound();
+            }
+            // Rechercher les discussions où userId et user2Id sont présents, soit en tant que idUser01, soit en tant que idUser02
+            var discussions = await _context.Discussion
+              .Where(d => (d.IdUser01 == userId || d.IdUser02 == userId) && (d.IdUser01 == user2Id || d.IdUser02 == user2Id))
+              .OrderBy(d => d.dates)
+              .Select(d => d.Message) // Sélectionner les messages des discussions
+              .ToListAsync();
+
+
+            if (discussions == null || discussions.Count == 0)
+            {
+                return NotFound();
+            }
+
+            return discussions;
+        }
+
 
         // GET: api/Discussions/5
         [HttpGet("{id}")]
