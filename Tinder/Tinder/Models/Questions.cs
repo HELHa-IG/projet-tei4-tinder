@@ -1,9 +1,19 @@
-﻿namespace Tinder.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
+
+namespace Tinder.Models
 {
     public class Questions
     {
         public int Id { get; set; }
-        public string QuestionJson { get; set; }
-        public string IdUser { get; set; }
+        public string Question { get; set; }
+        public string Reponse { get; set; }
+
+        [ForeignKey("IdUser")]
+        public int IdUser { get; set; }
+
+        [JsonIgnore]
+        public virtual Users? User { get; set; }
     }
+
 }
