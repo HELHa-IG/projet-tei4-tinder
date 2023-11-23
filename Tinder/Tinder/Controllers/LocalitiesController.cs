@@ -77,13 +77,13 @@ namespace Tinder.Controllers
 
             // Filtrer les utilisateurs qui sont dans la table MatchLike
             var likedUsers = await _context.MatchLike
-                .Where(m => (m.User01Like && m.IdUser01 == id.ToString()) || (m.User02Like && m.IdUser02 == id.ToString()))
-                .Select(m => m.IdUser01 == id.ToString() ? m.IdUser02 : m.IdUser01)
+                .Where(m => (m.User01Like && m.IdUser01 == id) || (m.User02Like && m.IdUser02 == id))
+                .Select(m => m.IdUser01 == id ? m.IdUser02 : m.IdUser01)
                 .ToListAsync();
 
             // Filtrer les utilisateurs qui ne sont pas aimés et qui sont dans le rayon spécifié
             var usersInRadius = allUsers
-                .Where(u => !likedUsers.Contains(u.Id.ToString()) && CalculDistanceBetweenTwoPoints(locality.Latitude, locality.Longitude, u.Locality.Latitude, u.Locality.Longitude) <= radius && u.Id != id)
+                .Where(u => !likedUsers.Contains(u.Id) && CalculDistanceBetweenTwoPoints(locality.Latitude, locality.Longitude, u.Locality.Latitude, u.Locality.Longitude) <= radius && u.Id != id)
                 .ToList();
 
             return usersInRadius;
