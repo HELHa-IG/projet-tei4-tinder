@@ -1,0 +1,60 @@
+<div class="inscriptionComponent">
+  <div class="inscriptionFormContainer">
+
+    <div class="logoTop">
+      <div class="logoCase">
+        <h1>MindSwap</h1>
+      </div>
+    </div>
+
+    <div class="titreComponent">
+      <h1>S'inscrire</h1>
+    </div>
+
+    <form [formGroup]="register">
+      <div class="containerInputCase">
+        <div class="inputCase">
+          <label #label>Nom d'utilisateur</label>
+          <input #input type="text" name="nom" (focus)="onFocus(0)" (blur)="onBlur(0)" formControlName="username" [class.invalid]="register.get('nom')?.invalid && register.get('nom')?.touched">
+          <i class="pi pi-user"></i>
+        </div>
+        <div class="inputCase">
+          <label #label>Email</label>
+          <input #input type="text" name="email" (focus)="onFocus(1)" (blur)="onBlur(1)" formControlName="email" [class.invalid]="register.get('email')?.invalid && register.get('email')?.touched">
+          <i class="pi pi-inbox"></i>
+        </div>
+        <div class="inputCase">
+          <label #label>Mot de passe</label>
+          <input #input type="password" name="mdp" (focus)="onFocus(2)" (blur)="onBlur(2)" formControlName="mdp" [class.invalid]="register.get('mdp')?.invalid && register.get('mdp')?.touched">
+          <i class="pi pi-key"></i>
+          <div class="indicationCaractere">
+            <p>*8 caractères minimum</p>
+          </div>
+        </div>
+        <div class="inputCase">
+          <label #label>Confirmer mot de passe</label>
+          <input #input type="password" name="confirmeMdp" (focus)="onFocus(3)" (blur)="onBlur(3)" formControlName="confirmeMdp" [class.invalid]="register.get('confirmeMdp')?.invalid && register.get('confirmeMdp')?.touched">
+          <i class="pi pi-key"></i>
+        </div>
+      </div>
+        <div class="loginBtn">
+          <a [routerLink]="['/login']">Vous avez déjà un compte ? Se connecter</a>
+        </div>
+        <div class="boutonContainer">
+          <div class="boutonInscription" (click)="sendData()">
+            <p>Inscription</p><i class="pi pi-send"></i>
+          </div>
+          <div class="load">
+            <i class="pi pi-spin pi-spinner loader" #responseNotification></i>
+          </div>
+          <div class="texteError check" #responseNotification>
+            <p>Champs Invalide</p>
+            <p>Erreur</p>
+          </div>
+          <div class="texte check" #responseNotification>
+            <p> Reussit </p>
+          </div>
+        </div>
+    </form>
+  </div>
+</div>

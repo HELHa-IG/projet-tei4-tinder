@@ -1,0 +1,40 @@
+<div class="login">
+  <div class="loginForm">
+    <div class="formulaireData">
+      <div class="titreForm">
+        <h1>S'identifier</h1>
+      </div>
+      <form [formGroup]="loginForm">
+        <div class="inputFirst marginInput">
+          <label #label>Nom d'utilisateur</label>
+          <input #input type="text" name="username" (focus)="onFocus(0)" (blur)="onBlur(0)" formControlName="username"
+            [class.invalid]="loginForm.get('username')?.invalid && loginForm.get('username')?.touched">
+          <i class="pi pi-user"></i>
+        </div>
+        <div class="inputFirst">
+          <label #label>Mot de passe</label>
+          <input #input type="password" name="password" (focus)="onFocus(1)" (blur)="onBlur(1)" formControlName="password"
+            [class.invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+          <i class="pi pi-key"></i>
+        </div>
+        <div class="forgotPassword">
+          <p>Vous n'avez pas encore de compte ? <a routerLink="/register"> S'inscrire maintenant</a></p>
+        </div>
+
+        <div class="sendContainerLoad">
+          <div class="boutonEnvoyer" (click)="login()">
+            <p class="btnConnexion">Connexion</p>
+          </div>
+          <div class="load">
+            <i class="pi pi-spin pi-spinner loader" #responseNotification></i>
+            <i class="pi pi-check check" style="color: green;" #responseNotification></i>
+            <p style="color: red; display: none;" #responseNotification>Mot de passe ou nom d'utilisateur incorrect</p>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="inscriptionRedirection">
+      <img src="./assets/logo-color.svg" alt="connexion illustration">
+    </div>
+  </div>
+</div>

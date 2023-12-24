@@ -1,0 +1,19 @@
+<app-navbar></app-navbar>
+<div class="containeurHistorique" >
+  <div class="titleHistorique">
+    <h1>Historique</h1>
+  </div>
+
+  <table id="result">
+    <tr>
+      <th>Date</th>
+      <th>Nom du deck</th>
+      <th>Score</th>
+    </tr>
+    <tr *ngFor="let result of results">
+      <td>{{ formatDate(result.date) }}</td>
+      <td>{{ result.deck.title }}</td>
+      <td>{{ result.correctAmount }} / {{ result.size }}</td>
+    </tr>
+  </table>
+</div>

@@ -1,0 +1,96 @@
+.cardDeck{
+  width: 200px;
+  height: 200px;
+  border: 1px solid #5068ee;
+  border-radius: 5px;
+  background-color: #5068ee;
+  margin: 5px;
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: center;
+  align-items: center;
+  font-size: 30px;
+  font-weight: bold;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  margin: 50px;
+  position: relative;
+}
+
+.cardDeck:hover{
+  background-color: #4b61de;
+  box-shadow: 0px 0px 5px 0px rgba(75, 60, 209, 0.75);
+}
+
+
+.dialog {
+  z-index: 1;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.dialog-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+#confirmLogout {
+  margin-top: 20px;
+  background-color: #f44336;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 20px;
+}
+
+#cancelLogout {
+  margin-top: 20px;
+  background-color: #bcbcbc;
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+
+
+.edit{
+  position: absolute;
+  bottom: -20px; /* Change 'top' to 'bottom' */
+  right: -20px;
+  width: 30px;
+  height: 30px;
+  background-color: green;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.del{
+  position: absolute;
+  top: -20px; /* Add this property */
+  right: -20px;
+  width: 30px;
+  height: 30px;
+  background-color: red;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}

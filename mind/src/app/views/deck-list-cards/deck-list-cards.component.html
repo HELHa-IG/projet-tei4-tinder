@@ -1,0 +1,77 @@
+<!-- Affiche sous forme de cards  toutes les cartes d'un deck -->
+<app-navbar></app-navbar>
+<div class="deck-container">
+  <div class="flip-card" *ngFor="let card of cards">
+    <div class="flip-card-inner">
+      <div class="flip-card-front">
+        <h2 class="card-title">{{card.frontText}}</h2>
+        <img *ngIf="card.frontImg" class="card-img" src="https://localhost:7150/Images/{{card.frontImg}}" alt="Card image cap">
+      </div>
+      <div class="flip-card-back">
+        <h2 class="card-text">{{card.backText}}</h2>
+        <img *ngIf="card.backImg" class="card-img" src="https://localhost:7150/Images/{{card.backImg}}" alt="Card image cap">
+      </div>
+    </div>
+    <div class="btnDiv">
+      <button class="btn-edit" (click)="openEditModal(card)">Modifier</button>
+      <button class="btn-delete" (click)="deleteCard(card)">Supprimer</button>
+    </div>
+  </div>
+</div>
+
+<div class="btnAddCard">
+  <button class="play" (click)="GoToJouer()">Jouer</button>
+  <button class="create" (click)="openModal()">Nouvelle carte</button>
+</div>
+
+
+
+<!-- The Modal -->
+<div id="myModal" class="modal" [ngStyle]="{'display': modalOpen ? 'block' : 'none'}">
+  <div class="modal-content">
+    <span class="close" (click)="closeModal()">×</span>
+    <form #cardForm="ngForm" (ngSubmit)="createCard(cardForm.value)">
+      <div class="form-group">
+        <label for="frontText">Question</label>
+        <input type="text" id="frontText" name="frontText" ngModel>
+      </div>
+      <div class="form-group">
+        <label for="backText">Réponse</label>
+        <input type="text" id="backText" name="backText" ngModel>
+      </div>
+      <div class="submitBtn">
+        <button type="submit">Envoyer</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<!-- The Modal for Edit -->
+<div id="editCardModal" class="modal" [ngStyle]="{'display': editCardModalOpen ? 'block' : 'none'}">
+  <div class="modal-content">
+    <span class="close" (click)="closeEditModal()">×</span>
+    <form *ngIf="selectedCard" #editCardForm="ngForm" (ngSubmit)="editCard(editCardForm.value)">
+      <div class="form-group">
+        <label for="editFrontText">Question</label>
+        <input type="text" id="editFrontText" name="frontText" [(ngModel)]="selectedCard.frontText">
+      </div>
+      <div class="form-group">
+        <label for="editBackText">Réponse</label>
+        <input type="text" id="editBackText" name="backText" [(ngModel)]="selectedCard.backText">
+      </div>
+
+      <div class="form-group">
+        <label for="editFrontPhoto">Photo question</label>
+        <input type="file" id="editFrontPhoto" name="frontPhoto" #frontPhoto>
+      </div>
+      <div class="form-group">
+        <label for="editBackPhoto">Photo réponse</label>
+        <input type="file" id="editBackPhoto" name="backPhoto" #backPhoto>
+      </div>
+      <div class="submitBtn">
+        <button type="submit">Envoyer</button>
+      </div>
+    </form>
+  </div>
+</div>

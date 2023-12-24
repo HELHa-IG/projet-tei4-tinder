@@ -1,0 +1,53 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: white;
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+
+.result-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.result-container h1 {
+  color:orange;
+  margin: 0;
+  text-align: center;
+}
+
+.result-container p {
+  font-size: 2em;
+  margin: 0;
+  text-align: center;
+}
+
+.button-container {
+  display: flex;
+  flex-direction: column;
+  width: 50%; /* Change this to adjust the width of the buttons */
+  max-width: 300px; /* This will prevent the buttons from becoming too large on big screens */
+}
+
+.button-container button {
+  background-color: #808080;
+  color: white;
+  border: none;
+  padding: 6%; /* Change this to adjust the padding of the buttons */
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 1.5em; /* Change this to adjust the font size of the buttons */
+  margin: 5% auto;
+  cursor: pointer;
+  border-radius: 15px;
+  width: 100%;
+}

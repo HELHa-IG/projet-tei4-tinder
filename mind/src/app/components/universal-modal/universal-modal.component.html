@@ -1,0 +1,14 @@
+<div class="modal" [ngStyle]="{'display': isOpen ? 'block' : 'none'}">
+  <div class="modal-content">
+    <span class="close" (click)="close()">×</span>
+    <form (ngSubmit)="submit()">
+      <div class="form-group">
+        <label for="title">{{ title }}</label>
+        <input type="text" id="title" name="title" [(ngModel)]="content" (ngModelChange)="formValue=$event">
+      </div>
+      <div class="submitBtn">
+        <button type="submit">Envoyer</button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,18 @@
+<div class="navbar">
+  <div (click)="openModalDeconnection()" class="icone">
+    <img src="./assets/home.svg" alt="home">
+  </div>
+  <h1 (click)="goToHomePage()">MindSwap</h1>
+  <a routerLink="/edit-profil" class="icone">
+    <img src="./assets/profile.svg" alt="profil">
+  </a>
+</div>
+
+<div *ngIf="openModal" id="logoutDialog" class="dialog">
+  <div class="dialog-content">
+    <h2>Déconnexion</h2>
+    <p>Êtes-vous sûr de vouloir vous déconnecter ?</p>
+    <button id="confirmLogout" (click)="logout()">Oui</button>
+    <button id="cancelLogout" (click)="closeModal()">Non</button>
+  </div>
+</div>

@@ -1,0 +1,16 @@
+<app-navbar></app-navbar>
+<!-- Afficher la liste des decks -->
+<div class="containeurDeck">
+  <div *ngFor="let deck of decks">
+    <app-deck-card (click)="goToDeckListCards(deck.id)" [title]="deck.title" (deleteEvent)="deleteDeck(deck.id)" (editEvent)="openModalEdit(deck)"></app-deck-card>
+  </div>
+</div>
+
+<div class="btnAddDeck">
+  <button class="newDek" (click)="openModal()">Nouveau deck</button>
+  <button class="historique" (click)="goToHistorique()" >Historique</button>
+</div>
+
+<app-universal-modal [isOpen]="modalOpen" [title]="'Nouveau deck'" [content]="defaultTitle" (submitEvent)="createDeck($event)" (closeEvent)="closeModal()"></app-universal-modal>
+
+<app-universal-modal *ngIf="selectedDeck" [isOpen]="modalOpenEdit" [title]="'Modifier le deck'" (submitEvent)="updateDeck($event)" (closeEvent)="closeModalEdit()"></app-universal-modal>
