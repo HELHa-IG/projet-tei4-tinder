@@ -24,7 +24,6 @@ namespace Tinder.Controllers
 
         // GET: api/MatchLikes
         [HttpGet]
-        [Authorize(Roles ="admin")]
         public async Task<ActionResult<IEnumerable<MatchLike>>> GetMatchLike()
         {
           if (_context.MatchLike == null)
@@ -36,7 +35,6 @@ namespace Tinder.Controllers
 
         // GET: api/MatchLikes/5
         [HttpGet("{id}")]
-        [Authorize]
         public async Task<ActionResult<MatchLike>> GetMatchLike(int id)
         {
           if (_context.MatchLike == null)
@@ -52,11 +50,38 @@ namespace Tinder.Controllers
 
             return matchLike;
         }
+          // GET: api/MatchLikes
+        [HttpGet("GetMatchLikeByUserIdAndScore/{id}")]
+        public async Task<ActionResult<IEnumerable<MatchLike>>> GetMatchLikeByUserIdAndScore(int id)
+        {
+            if (_context.MatchLike == null)
+            {
+                return NotFound();
+            }
+            return await _context.MatchLike.Where(m => (m.IdUser01 == id || m.IdUser02 == id) && (m.ScoreUser01 >= 2 && m.ScoreUser02 >=2) ).ToListAsync();
+        }
+
+        // GET: api/MatchLikes/5
+        [HttpGet("/GetMatchLikeByTwoUserId/{idUser01}/{idUser02}")]
+        public async Task<ActionResult<MatchLike>> GetMatchLikeByTwoUserId(int idUser01, int idUser02)
+        {
+            if (_context.MatchLike == null)
+            {
+                return NotFound();
+            }
+            var matchLike = await _context.MatchLike.Where(m => (m.IdUser01 == idUser01 && m.IdUser02 == idUser02) || (m.IdUser01 == idUser02 && m.IdUser02 == idUser01)).FirstAsync();
+
+            if (matchLike == null)
+            {
+                return NotFound();
+            }
+
+            return matchLike;
+        }
 
         // PUT: api/MatchLikes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        [Authorize]
         public async Task<IActionResult> PutMatchLike(int id, MatchLike matchLike)
         {
             if (id != matchLike.Id)
@@ -88,7 +113,6 @@ namespace Tinder.Controllers
         // POST: api/MatchLikes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        [Authorize]
         public async Task<ActionResult<MatchLike>> PostMatchLike(MatchLike matchLike)
         {
             if (_context.MatchLike == null)
@@ -118,7 +142,6 @@ namespace Tinder.Controllers
 
         // DELETE: api/MatchLikes/5
         [HttpDelete("{id}")]
-        [Authorize]
         public async Task<IActionResult> DeleteMatchLike(int id)
         {
             if (_context.MatchLike == null)

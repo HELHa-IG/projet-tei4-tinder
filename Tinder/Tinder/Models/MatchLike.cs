@@ -6,8 +6,8 @@ namespace Tinder.Models
     public class MatchLike
     {
         public int Id { get; set; }
-        public string ScoreUser01 { get; set; }
-        public string ScoreUser02 { get; set; }
+        public int ScoreUser01 { get; set; }
+        public int ScoreUser02 { get; set; }
         public Boolean User01Like { get; set;}
         public Boolean User02Like { get; set;}
 

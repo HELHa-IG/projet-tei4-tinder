@@ -26,7 +26,6 @@ namespace Tinder.Controllers
         }
 
         // GET: api/Users
-        [Authorize(Roles = "admin")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Users>>> GetUsers()
         {
@@ -38,7 +37,6 @@ namespace Tinder.Controllers
         }
 
         // GET: api/Users/5
-        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<Users>> GetUsers(int id)
         {
@@ -59,8 +57,7 @@ namespace Tinder.Controllers
         // PUT: api/Users/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        [Authorize]
-        public async Task<IActionResult> PutUsers(int id, [FromBody] Register model)
+        public async Task<IActionResult> PutUsers(int id, [FromBody] UsersPut model)
         {
             var existingUser = await _context.Users.FindAsync(id);
 
@@ -91,16 +88,6 @@ namespace Tinder.Controllers
                     existingUser.Locality = model.Locality;
                 }
             }
-            if (model.ConfirmPassword == model.Password)
-            {
-                using HMACSHA512? hmac = new();
-                existingUser.PasswordSalt = hmac.Key;
-                existingUser.PasswordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(model.Password));
-            }
-            else
-            {
-                return BadRequest("Passwords Don't Match");
-            }
 
             try
             {
@@ -126,7 +113,6 @@ namespace Tinder.Controllers
 
         // DELETE: api/Users/5
         [HttpDelete("{id}")]
-        [Authorize]
         public async Task<IActionResult> DeleteUsers(int id)
         {
             if (_context.Users == null)
@@ -291,11 +277,10 @@ namespace Tinder.Controllers
                      SameSite = SameSiteMode.None
                  });
 
-            return new { token = encrypterToken, username = user.FirstName };
+            return new { lastName = user.LastName, token = encrypterToken };
         }
 
         [HttpPost("Logout")]
-        [Authorize]
         public IActionResult Logout()
         {
             HttpContext.Response.Cookies.Delete("token");

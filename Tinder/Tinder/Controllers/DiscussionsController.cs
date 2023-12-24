@@ -25,7 +25,6 @@ namespace Tinder.Controllers
 
         // GET: api/Discussions
         [HttpGet]
-        [Authorize(Roles ="admin")]
         public async Task<ActionResult<IEnumerable<Discussion>>> GetDiscussion()
         {
           if (_context.Discussion == null)
@@ -36,25 +35,20 @@ namespace Tinder.Controllers
         }
 
         // GET: api/Discussions/5
-        [HttpGet("{idUserSession}")]
-        public async Task<ActionResult<IEnumerable<Users>>> GetUsersFromDiscussion(string id)
+        [HttpGet("/AllUserDiscussion/{idUserSession}")]
+        public async Task<ActionResult<IEnumerable<Users>>> GetUsersFromDiscussion(int idUserSession)
         {
-            // Récupérer la discussion
-            var discussion = await _context.Discussion.FindAsync(id);
-            if (discussion == null)
-            {
-                return NotFound();
-            }
-
+            
             // Récupérer tous les utilisateurs où votre ID est présent
             var discussions = await _context.Discussion
-                .Where(d => d.IdUser01.ToString() == id || d.IdUser02.ToString() == id)
+                .Where(d => d.IdUser01 == idUserSession || d.IdUser02 == idUserSession)
                 .ToListAsync();
 
             // Filtrer pour prendre les ID qui sont différents de l'ID passé en paramètre
             var userIds = discussions
-                .Select(d => d.IdUser01.ToString() == id ? d.IdUser02 : d.IdUser01)
+                .Select(d => d.IdUser01 == idUserSession ? d.IdUser02 : d.IdUser01)
                 .Distinct()
+                .Where(id => id != idUserSession) // Exclure l'idUserSession de la liste
                 .ToList();
 
             // Récupérer dans la table users les noms des user qui ont l'id de ma liste
@@ -68,13 +62,13 @@ namespace Tinder.Controllers
                 .ToListAsync();
 
             // Retourner l'id et le nom de chaque utilisateur
-            return users;
+            return Ok(users);
         }
 
 
         // GET: api/Discussions/5/3
         [HttpGet("{userId}/{user2Id}")]
-        public async Task<ActionResult<IEnumerable<String>>> GetDiscussionMessages(int userId, int user2Id)
+        public async Task<ActionResult<IEnumerable<string>>> GetDiscussionMessages(int userId, int user2Id)
         {
             if (_context.Discussion == null)
             {
@@ -83,8 +77,8 @@ namespace Tinder.Controllers
             // Rechercher les discussions où userId et user2Id sont présents, soit en tant que idUser01, soit en tant que idUser02
             var discussions = await _context.Discussion
               .Where(d => (d.IdUser01 == userId || d.IdUser02 == userId) && (d.IdUser01 == user2Id || d.IdUser02 == user2Id))
-              .OrderBy(d => d.dates)
-              .Select(d => d.Message) // Sélectionner les messages des discussions
+              .OrderByDescending(d => d.Id)
+              .Take(5)
               .ToListAsync();
 
 
@@ -93,13 +87,12 @@ namespace Tinder.Controllers
                 return NotFound();
             }
 
-            return discussions;
+            return Ok(discussions);
         }
 
 
         // GET: api/Discussions/5
         [HttpGet("{id}")]
-        [Authorize]
         public async Task<ActionResult<Discussion>> GetDiscussion(string id)
         {
           if (_context.Discussion == null)
@@ -119,8 +112,7 @@ namespace Tinder.Controllers
         // PUT: api/Discussions/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        [Authorize]
-        public async Task<IActionResult> PutDiscussion(string id, Discussion discussion)
+        public async Task<IActionResult> PutDiscussion(int id, Discussion discussion)
         {
             if (id != discussion.Id)
             {
@@ -151,7 +143,6 @@ namespace Tinder.Controllers
         // POST: api/Discussions
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        [Authorize]
         public async Task<ActionResult<Discussion>> PostDiscussion(Discussion discussion)
         {
           if (_context.Discussion == null)
@@ -180,7 +171,6 @@ namespace Tinder.Controllers
 
         // DELETE: api/Discussions/5
         [HttpDelete("{id}")]
-        [Authorize]
         public async Task<IActionResult> DeleteDiscussion(string id)
         {
             if (_context.Discussion == null)
@@ -199,7 +189,7 @@ namespace Tinder.Controllers
             return NoContent();
         }
 
-        private bool DiscussionExists(string id)
+        private bool DiscussionExists(int id)
         {
             return (_context.Discussion?.Any(e => e.Id == id)).GetValueOrDefault();
         }
