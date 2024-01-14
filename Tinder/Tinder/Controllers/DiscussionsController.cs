@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Tinder.Data;
 using Tinder.Models;
 
+
 namespace Tinder.Controllers
 {
     [Route("api/[controller]")]
@@ -27,10 +28,10 @@ namespace Tinder.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Discussion>>> GetDiscussion()
         {
-          if (_context.Discussion == null)
-          {
-              return NotFound();
-          }
+            if (_context.Discussion == null)
+            {
+                return NotFound();
+            }
             return await _context.Discussion.ToListAsync();
         }
 
@@ -38,7 +39,7 @@ namespace Tinder.Controllers
         [HttpGet("/AllUserDiscussion/{idUserSession}")]
         public async Task<ActionResult<IEnumerable<Users>>> GetUsersFromDiscussion(int idUserSession)
         {
-            
+
             // Récupérer tous les utilisateurs où votre ID est présent
             var discussions = await _context.Discussion
                 .Where(d => d.IdUser01 == idUserSession || d.IdUser02 == idUserSession)
@@ -93,12 +94,12 @@ namespace Tinder.Controllers
 
         // GET: api/Discussions/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Discussion>> GetDiscussion(string id)
+        public async Task<ActionResult<Discussion>> GetDiscussion(int id)
         {
-          if (_context.Discussion == null)
-          {
-              return NotFound();
-          }
+            if (_context.Discussion == null)
+            {
+                return NotFound();
+            }
             var discussion = await _context.Discussion.FindAsync(id);
 
             if (discussion == null)
@@ -145,10 +146,10 @@ namespace Tinder.Controllers
         [HttpPost]
         public async Task<ActionResult<Discussion>> PostDiscussion(Discussion discussion)
         {
-          if (_context.Discussion == null)
-          {
-              return Problem("Entity set 'TinderContext.Discussion'  is null.");
-          }
+            if (_context.Discussion == null)
+            {
+                return Problem("Entity set 'TinderContext.Discussion'  is null.");
+            }
             _context.Discussion.Add(discussion);
             try
             {
@@ -171,7 +172,7 @@ namespace Tinder.Controllers
 
         // DELETE: api/Discussions/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteDiscussion(string id)
+        public async Task<IActionResult> DeleteDiscussion(int id)
         {
             if (_context.Discussion == null)
             {

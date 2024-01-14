@@ -12,8 +12,8 @@ using Tinder.Data;
 namespace Tinder.Migrations
 {
     [DbContext(typeof(TinderContext))]
-    [Migration("20231123082631_test")]
-    partial class test
+    [Migration("20240114150955_ok")]
+    partial class ok
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -26,8 +26,11 @@ namespace Tinder.Migrations
 
             modelBuilder.Entity("Tinder.Models.Discussion", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("IdUser01")
                         .HasColumnType("int");
@@ -111,13 +114,11 @@ namespace Tinder.Migrations
                     b.Property<int>("IdUser02")
                         .HasColumnType("int");
 
-                    b.Property<string>("ScoreUser01")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("ScoreUser01")
+                        .HasColumnType("int");
 
-                    b.Property<string>("ScoreUser02")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("ScoreUser02")
+                        .HasColumnType("int");
 
                     b.Property<int?>("User01Id")
                         .HasColumnType("int");
@@ -148,14 +149,18 @@ namespace Tinder.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<string>("Bad")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Good")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("IdUser")
                         .HasColumnType("int");
 
                     b.Property<string>("Question")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Reponse")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

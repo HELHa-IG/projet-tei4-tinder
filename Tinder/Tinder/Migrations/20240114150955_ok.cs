@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Tinder.Migrations
 {
-    public partial class test : Migration
+    public partial class ok : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -61,7 +61,8 @@ namespace Tinder.Migrations
                 name: "Discussion",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     dates = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IdUser01 = table.Column<int>(type: "int", nullable: false),
@@ -90,8 +91,8 @@ namespace Tinder.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ScoreUser01 = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ScoreUser02 = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ScoreUser01 = table.Column<int>(type: "int", nullable: false),
+                    ScoreUser02 = table.Column<int>(type: "int", nullable: false),
                     User01Like = table.Column<bool>(type: "bit", nullable: false),
                     User02Like = table.Column<bool>(type: "bit", nullable: false),
                     IdUser01 = table.Column<int>(type: "int", nullable: false),
@@ -123,7 +124,8 @@ namespace Tinder.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Question = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Reponse = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Good = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Bad = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IdUser = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: true)
                 },

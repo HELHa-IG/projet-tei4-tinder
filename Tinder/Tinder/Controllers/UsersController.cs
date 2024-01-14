@@ -57,7 +57,7 @@ namespace Tinder.Controllers
         // PUT: api/Users/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUsers(int id, [FromBody] UsersPut model)
+        public async Task<IActionResult> PutUsers(int id, [FromBody] Register model)
         {
             var existingUser = await _context.Users.FindAsync(id);
 
@@ -74,7 +74,7 @@ namespace Tinder.Controllers
             existingUser.Email = model.Email;
             existingUser.Role = model.Role;
 
-            if(model.Locality != null)
+            if (model.Locality != null)
             {
                 var existingLocality = _context.Locality.FirstOrDefault(l => l.Equals(model.Locality));
 
@@ -171,7 +171,7 @@ namespace Tinder.Controllers
                 Email = model.Email,
                 Role = model.Role,
                 Locality = model.Locality,
-                
+
             };
 
             if (model.ConfirmPassword == model.Password)
@@ -257,8 +257,8 @@ namespace Tinder.Controllers
                     new Claim("PostalCode", userWithLocality.Locality.CodePostal),
                     new Claim("Street", userWithLocality.Locality.Rue),
                     new Claim("Number", userWithLocality.Locality.Numero),
-                    new Claim("Longitude", userWithLocality.Locality.Longitude), 
-                    new Claim("Latitude", userWithLocality.Locality.Latitude) 
+                    new Claim("Longitude", userWithLocality.Locality.Longitude),
+                    new Claim("Latitude", userWithLocality.Locality.Latitude)
 
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),

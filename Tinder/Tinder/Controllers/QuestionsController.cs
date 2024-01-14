@@ -26,10 +26,10 @@ namespace Tinder.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Questions>>> GetQuestions()
         {
-          if (_context.Questions == null)
-          {
-              return NotFound();
-          }
+            if (_context.Questions == null)
+            {
+                return NotFound();
+            }
             return await _context.Questions.ToListAsync();
         }
 
@@ -37,10 +37,10 @@ namespace Tinder.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Questions>> GetQuestions(int id)
         {
-          if (_context.Questions == null)
-          {
-              return NotFound();
-          }
+            if (_context.Questions == null)
+            {
+                return NotFound();
+            }
             var questions = await _context.Questions.FindAsync(id);
 
             if (questions == null)
@@ -105,7 +105,7 @@ namespace Tinder.Controllers
             if (_context.Users == null)
             {
                 return Problem("Entity set 'TinderContext.Questions'  is null.");
-            } 
+            }
 
             var user = await _context.Users.FindAsync(questions.IdUser);
 
@@ -114,7 +114,7 @@ namespace Tinder.Controllers
                 // L'utilisateur existe, vous pouvez insérer la question
                 _context.Questions.Add(questions);
                 await _context.SaveChangesAsync();
-                
+
             }
             else
             {

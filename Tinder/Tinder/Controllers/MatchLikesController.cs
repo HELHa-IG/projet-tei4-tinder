@@ -26,10 +26,10 @@ namespace Tinder.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MatchLike>>> GetMatchLike()
         {
-          if (_context.MatchLike == null)
-          {
-              return NotFound();
-          }
+            if (_context.MatchLike == null)
+            {
+                return NotFound();
+            }
             return await _context.MatchLike.ToListAsync();
         }
 
@@ -37,10 +37,10 @@ namespace Tinder.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<MatchLike>> GetMatchLike(int id)
         {
-          if (_context.MatchLike == null)
-          {
-              return NotFound();
-          }
+            if (_context.MatchLike == null)
+            {
+                return NotFound();
+            }
             var matchLike = await _context.MatchLike.FindAsync(id);
 
             if (matchLike == null)
@@ -50,7 +50,7 @@ namespace Tinder.Controllers
 
             return matchLike;
         }
-          // GET: api/MatchLikes
+        // GET: api/MatchLikes
         [HttpGet("GetMatchLikeByUserIdAndScore/{id}")]
         public async Task<ActionResult<IEnumerable<MatchLike>>> GetMatchLikeByUserIdAndScore(int id)
         {
@@ -58,7 +58,7 @@ namespace Tinder.Controllers
             {
                 return NotFound();
             }
-            return await _context.MatchLike.Where(m => (m.IdUser01 == id || m.IdUser02 == id) && (m.ScoreUser01 >= 2 && m.ScoreUser02 >=2) ).ToListAsync();
+            return await _context.MatchLike.Where(m => (m.IdUser01 == id || m.IdUser02 == id) && (m.ScoreUser01 >= 2 && m.ScoreUser02 >= 2)).ToListAsync();
         }
 
         // GET: api/MatchLikes/5

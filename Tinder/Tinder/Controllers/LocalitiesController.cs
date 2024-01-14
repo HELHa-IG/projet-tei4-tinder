@@ -27,10 +27,10 @@ namespace Tinder.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Locality>>> GetLocality()
         {
-          if (_context.Locality == null)
-          {
-              return NotFound();
-          }
+            if (_context.Locality == null)
+            {
+                return NotFound();
+            }
             return await _context.Locality.ToListAsync();
         }
 
@@ -38,10 +38,10 @@ namespace Tinder.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Locality>> GetLocality(int id)
         {
-          if (_context.Locality == null)
-          {
-              return NotFound();
-          }
+            if (_context.Locality == null)
+            {
+                return NotFound();
+            }
             var locality = await _context.Locality.FindAsync(id);
 
             if (locality == null)
@@ -158,10 +158,10 @@ namespace Tinder.Controllers
         [HttpPost]
         public async Task<ActionResult<Locality>> PostLocality(Locality locality)
         {
-          if (_context.Locality == null)
-          {
-              return Problem("Entity set 'TinderContext.Locality'  is null.");
-          }
+            if (_context.Locality == null)
+            {
+                return Problem("Entity set 'TinderContext.Locality'  is null.");
+            }
             _context.Locality.Add(locality);
             await _context.SaveChangesAsync();
 
